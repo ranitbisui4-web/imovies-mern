@@ -159,6 +159,35 @@ const AdminDashboard = () => {
       toast.error('Failed to remove showtime');
     }
   };
+  const handleEditBooking = async (b) => {
+    const updatedSeats = window.prompt(
+      `Edit seats for ${b.bookingCode} (comma separated):`,
+      b.seats.join(', ')
+    );
+    if (!updatedSeats) return;
+    const seatArray = updatedSeats.split(',').map((s) => s.trim().toUpperCase()).filter(Boolean);
+    const updatedAmount = window.prompt('Update total amount (Rs.):', b.totalAmount);
+    try {
+      await api.put(`/bookings/${b._id}`, {
+        seats: seatArray,
+        totalAmount: Number(updatedAmount) || b.totalAmount
+      });
+      toast.success(`Updated booking ${b.bookingCode}`);
+      loadAdminData();
+    } catch (err) {
+      toast.error('Failed to update booking');
+    }
+  };
+
+  const handleRefundBooking = async (b) => {
+    try {
+      await api.put(`/bookings/${b._id}/cancel`);
+      toast.info(`Refunded ${b.bookingCode} & released seats ${b.seats.join(', ')}`);
+      loadAdminData();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Refund failed');
+    }
+  };
 
   return (
     <div className="container py-4">
@@ -409,6 +438,67 @@ const AdminDashboard = () => {
               Theatres: {theatres.length} • Total Bookings: {bookings.length}
             </p>
           </div>
+        </div>
+      </div>
+      {/* Booked Seat Details, Edit & Refund Manager */}
+      <div className="card bg-black text-light border-secondary p-3 mt-4">
+        <h5 className="fw-bold mb-3">All Customer Bookings & Seat Details ({bookings.length})</h5>
+        <div className="table-responsive">
+          <table className="table table-dark table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Booking No.</th>
+                <th>Customer</th>
+                <th>Movie & Show</th>
+                <th>Seats</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bookings.map((b) => (
+                <tr key={b._id}>
+                  <td><span className="badge bg-danger">{b.bookingCode}</span></td>
+                  <td>
+                    <div>{b.user?.name}</div>
+                    <small className="text-secondary">{b.user?.email}</small>
+                  </td>
+                  <td>
+                    <div>{b.show?.movie?.title}</div>
+                    <small className="text-secondary">
+                      {b.show?.theatre?.name} • {b.show?.showDate} {b.show?.showTime}
+                    </small>
+                  </td>
+                  <td className="fw-bold text-info">{b.seats?.join(', ')}</td>
+                  <td>Rs. {b.totalAmount}</td>
+                  <td>
+                    <span className={`badge ${b.bookingStatus === 'confirmed' ? 'bg-success' : 'bg-secondary'}`}>
+                      {b.bookingStatus.toUpperCase()}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="d-flex gap-2">
+                      <button
+                        onClick={() => handleEditBooking(b)}
+                        className="btn btn-outline-warning btn-sm"
+                      >
+                        Edit Seats
+                      </button>
+                      {b.bookingStatus === 'confirmed' && (
+                        <button
+                          onClick={() => handleRefundBooking(b)}
+                          className="btn btn-outline-danger btn-sm"
+                        >
+                          Cancel & Refund
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -55,6 +55,7 @@ app.use('/api/movies', movieRoutes);
 app.use('/api/theatres', theatreRoutes);
 app.use('/api/shows', showRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/ai', require('./routes/aiRoutes'));
 
 // Real-Time Seat Selection & Availability Tracking via Socket.io
 io.on('connection', (socket) => {

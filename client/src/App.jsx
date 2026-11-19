@@ -1,3 +1,4 @@
+import AiAssistant from './components/AiAssistant';
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -38,7 +39,7 @@ const App = () => {
           }
         />
       </Routes>
-      <ToastContainer position="bottom-right" theme="dark" />
+      <AiAssistant /> <ToastContainer position="bottom-right" theme="dark" />
     </div>
   );
 };

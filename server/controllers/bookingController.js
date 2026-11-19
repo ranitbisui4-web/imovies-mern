@@ -215,3 +215,38 @@ exports.getAllBookingsAdmin = async (req, res, next) => {
     next(err);
   }
 };
+exports.updateBookingAdmin = async (req, res, next) => {
+  try {
+    const { seats, bookingStatus, totalAmount } = req.body;
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      res.status(404);
+      throw new Error('Booking not found');
+    }
+
+    const showId = booking.show;
+
+    // If seats changed, release old seats and book new seats
+    if (Array.isArray(seats) && seats.length > 0) {
+      await Seat.updateMany(
+        { show: showId, seatNumber: { $in: booking.seats } },
+        { $set: { status: 'available', lockedBy: null, lockedUntil: null } }
+      );
+      await Seat.updateMany(
+        { show: showId, seatNumber: { $in: seats } },
+        { $set: { status: 'booked', lockedBy: null, lockedUntil: null } }
+      );
+      booking.seats = seats;
+      const availableCount = await Seat.countDocuments({ show: showId, status: 'available' });
+      await Show.findByIdAndUpdate(showId, { availableSeats: availableCount });
+    }
+
+    if (bookingStatus) booking.bookingStatus = bookingStatus;
+    if (totalAmount !== undefined) booking.totalAmount = Number(totalAmount);
+    await booking.save();
+
+    res.json({ message: 'Booking updated successfully', booking });
+  } catch (err) {
+    next(err);
+  }
+};
