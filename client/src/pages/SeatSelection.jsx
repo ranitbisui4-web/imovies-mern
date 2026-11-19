@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://imovies-api-xy3q.onrender.com';
 
 const SeatSelection = () => {
   const { showId } = useParams();
