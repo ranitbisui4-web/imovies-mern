@@ -6,8 +6,8 @@ import api from '../services/api';
 import { setCredentials } from '../store/authSlice';
 
 const Login = () => {
-  const [email, setEmail] = useState('admin@imovies.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
