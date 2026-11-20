@@ -40,7 +40,10 @@ const Home = () => {
 
   return (
     <div className="container py-4">
-      <div className="p-4 mb-4 rounded-3 bg-secondary bg-opacity-25 border border-secondary">
+      <div
+        data-bs-theme="dark"
+        className="p-4 mb-4 rounded-3 bg-secondary bg-opacity-25 border border-secondary"
+      >
         <h2 className="fw-bold mb-2">Book Movie Tickets Instantly</h2>
         <p className="text-secondary mb-3">
           Browse movies, filter by theatre location, language, genre, and reserve seats in real time.
@@ -49,15 +52,15 @@ const Home = () => {
           <div className="col-md-3">
             <input
               type="text"
-              className="form-control bg-dark text-light border-secondary"
-              placeholder="Search movie title..."
+              className="form-control bg-dark text-white border-secondary"
+              placeholder="Enter movie name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <div className="col-md-2">
             <select
-              className="form-select bg-dark text-light border-secondary"
+              className="form-select bg-dark text-white border-secondary"
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
             >
@@ -71,7 +74,7 @@ const Home = () => {
           </div>
           <div className="col-md-2">
             <select
-              className="form-select bg-dark text-light border-secondary"
+              className="form-select bg-dark text-white border-secondary"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
             >
@@ -83,7 +86,7 @@ const Home = () => {
           </div>
           <div className="col-md-2">
             <select
-              className="form-select bg-dark text-light border-secondary"
+              className="form-select bg-dark text-white border-secondary"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
             >
@@ -96,7 +99,7 @@ const Home = () => {
           <div className="col-md-2">
             <input
               type="date"
-              className="form-control bg-dark text-light border-secondary"
+              className="form-control bg-dark text-white border-secondary"
               value={date}
               onChange={(e) => setDate(e.target.value)}
             />
@@ -111,11 +114,15 @@ const Home = () => {
 
       {loading ? (
         <div className="text-center py-5">Loading movies...</div>
+      ) : movies.length === 0 ? (
+        <div className="text-center py-5 text-secondary">
+          No movies matched your search. Clear the search box and click <strong>Find</strong> to view all movies.
+        </div>
       ) : (
         <div className="row g-4">
           {movies.map((movie) => (
             <div key={movie._id} className="col-md-3">
-              <div className="card bg-black text-light border-secondary h-100">
+              <div className="card bg-black text-white border-secondary h-100">
                 <img
                   src={movie.posterUrl}
                   alt={movie.title}
